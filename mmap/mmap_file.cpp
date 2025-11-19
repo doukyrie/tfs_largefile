@@ -202,9 +202,9 @@ namespace qiniu
                 return false;
             }
 
-            if(s.st_size < this->size)  //文件比内存的空间小，则将文件扩容
+            if(s.st_size < size)  //文件比内存的空间小，则将文件扩容
             {  
-                if(ftruncate(this->fd,this->size)<0)  //将文件扩大到和当前内存空间一样大
+                if(ftruncate(this->fd,size)<0)  //将文件扩大到和当前内存空间一样大
                 {
                     fprintf(stderr,"ftruncate failed: %s",strerror(errno));
                     return false;

@@ -44,8 +44,10 @@ int main()
 
     if(is_mapped)
     {
-        memset(mmap_file->get_data(),'8',mmap_file->get_size());    //将内存中的那块大小中的内容全部设为8
-        if(mmap_file->sync_file())
+        mmap_file->remmap_file();
+
+        memset(mmap_file->get_data(),'1',mmap_file->get_size());    //将内存中的那块大小中的内容全部设为8
+        if(mmap_file->sync_file())  //写完后将内存中的文件同步到本地文件中
         {
             printf("sync_file success\n");
         }
