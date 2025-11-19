@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "new": "cpp"
+        "new": "cpp",
+        "cerrno": "cpp",
+        "cstring": "cpp"
     }
 }
