@@ -1,15 +1,7 @@
 #ifndef FILE_OP_H
 #define FILE_OP_H
 
-#include<unistd.h>
-#include<sys/mman.h>
-#include<cerrno>
-#include<cstring>
-#include <sys/stat.h>
-#include <aio.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <string>
+#include "common.h"
 
 namespace qiniu
 {
@@ -18,8 +10,8 @@ namespace qiniu
         class FileOperation
         {
         public:
-            FileOperation(const std::string& file_name, const int open_flag = O_RDWR | O_LARGEFILE){}
-            ~FileOperation(){}
+            FileOperation(const std::string& file_name, const int open_flag = O_RDWR | O_LARGEFILE);
+            ~FileOperation();
 
             //打开和关闭文件
             int open_file();
@@ -44,7 +36,7 @@ namespace qiniu
             int64_t get_file_size();
 
             //文件截断，减少文件大小
-            int ftruncate_file(int64_t size);   //size：要截断的大小
+            int ftruncate_file(int64_t size);   //size：截断后的大小
 
             //设置文件偏移量
             int seek_file(int64_t offset);
@@ -52,12 +44,18 @@ namespace qiniu
             //获取文件描述符
             int get_fd();
 
+        protected:
+            //没有显式调用open_file，即文件还没打开时，仍然希望查看文件大小，则用check_file，先打开，获取文件大小后再关闭
+            int check_file();
+
+
         private:
             int fd; //文件描述符
             int64_t size;   //文件大小
-            std::string file_name;  //文件名
+            char * file_name;  //文件名
             int open_flag;  //文件打开标志
-
+        
+        //子类当前类能调，类外不能调，private是子类不能调只有当前类能调
         protected:
             static const mode_t open_mode = 0644;   //文件权限
             static const int max_disk = 5;  //最大访问磁盘的次数，防止偶尔失败后仍频繁读写导致系统崩溃

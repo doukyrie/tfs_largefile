@@ -1,5 +1,4 @@
 #include "mmap_file.h"
-#include <stdio.h>
 
 static int debug = 1;   //设置是否为调试模式
 

@@ -1,14 +1,7 @@
 #ifndef MMAP_FILE_H
 #define MMAP_FILE_H
 
-#include<unistd.h>
-#include<sys/mman.h>
-#include<cerrno>
-#include<cstring>
-#include <sys/stat.h>
-#include <aio.h>
-#include <sys/types.h>
-#include <fcntl.h>
+#include "common.h"
 
 namespace qiniu
 {
