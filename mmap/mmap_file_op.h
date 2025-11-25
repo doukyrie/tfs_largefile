@@ -13,18 +13,10 @@ namespace qiniu
         {
         public:
             //构造函数
-            MMapFileOperation(const std::string &file_name, int open_flag = O_CREAT | O_LARGEFILE | O_RDWR):
-            FileOperation(file_name,open_flag),file_mmap(NULL),isMapped(false){}    //初始化列表中先构造一个FileOperation类
+            MMapFileOperation(const std::string &file_name, int open_flag = O_CREAT | O_LARGEFILE | O_RDWR);
 
             //析构函数
-            ~MMapFileOperation()
-            {
-                if(mmap_file != NULL)
-                {
-                    delete file_mmap;
-                    file_mmap = NULL;
-                }
-            }
+            ~MMapFileOperation();
 
             //含偏移的读文件
             int pread_file(char *buf, int32_t size,int64_t offset); //buf：存放读的数据 size：要读的大小    offset：偏移量（从哪里开始读）

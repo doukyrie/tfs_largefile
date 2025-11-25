@@ -24,10 +24,10 @@ namespace qiniu
             int unlink_file();
 
             //读文件
-            int pread_file(char *buf, const int32_t size, const int64_t offset);    //buf：将文件读到缓冲区 size：读文件的长度    offset：文件偏移量，读的位置
+            virtual int pread_file(char *buf, const int32_t size, const int64_t offset);    //buf：将文件读到缓冲区 size：读文件的长度    offset：文件偏移量，读的位置
 
             //写文件
-            int pwrite_file(const char* buf, const int32_t size, const int64_t offset); //将buf写入文件，buf不能修改
+            virtual int pwrite_file(const char* buf, const int32_t size, const int64_t offset); //将buf写入文件，buf不能修改
 
             //直接提供偏移量，从当前位置开始写，不需要再传偏移量
             int write_file(const char* buf, const int32_t size);

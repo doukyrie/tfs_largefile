@@ -17,6 +17,7 @@ namespace qiniu
     namespace largefile
     {
         const int32_t OP_SUCCESS = 0; //操作成功
+        const int32_t OP_ERROR = -1;   //操作失败
         const int32_t EXIT_DISK_OP_INCOMPLETE = -8012;  //读写长度小于要求的
     }
 }

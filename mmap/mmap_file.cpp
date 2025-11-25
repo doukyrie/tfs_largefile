@@ -142,7 +142,7 @@ namespace qiniu
         }
 
 
-        //重新分配内存并映射
+        //重新分配（追加）内存并映射
         bool MMapFile::remmap_file()
         {
             if(this->fd<0 || this->data ==NULL)
