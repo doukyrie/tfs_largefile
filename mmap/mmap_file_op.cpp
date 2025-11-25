@@ -6,13 +6,13 @@ namespace qiniu
     namespace largefile
     {
         //构造函数
-        MMapFileOperation::MMapFileOperation(const std::string &file_name, int open_flag = O_CREAT | O_LARGEFILE | O_RDWR):
+        MMapFileOperation::MMapFileOperation(const std::string &file_name,int open_flag):
         FileOperation(file_name,open_flag),file_mmap(NULL),isMapped(false){}    //初始化列表中先构造一个FileOperation类
 
         //析构函数
         MMapFileOperation::~MMapFileOperation()
         {
-            if(mmap_file != NULL)
+            if(this->file_mmap != NULL)
             {
                 delete file_mmap;
                 file_mmap = NULL;
