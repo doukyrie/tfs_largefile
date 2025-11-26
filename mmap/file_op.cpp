@@ -253,7 +253,7 @@ namespace qiniu
                 return -1;
             }
             
-            if(this->fd<0) close(fd);   //如果文件本身没打开，用check_file打开后应当关闭
+            //if(this->fd<0) close(fd);   //如果文件本身没打开，用check_file打开后应当关闭
 
             return buf.st_size;
         }

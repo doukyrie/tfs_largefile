@@ -12,6 +12,7 @@
 #include <string>
 #include <stdio.h>
 #include <assert.h>
+#include <sstream>
 
 namespace qiniu
 {
@@ -20,6 +21,14 @@ namespace qiniu
         const int32_t OP_SUCCESS = 0; //操作成功
         const int32_t OP_ERROR = -1;   //操作失败
         const int32_t EXIT_DISK_OP_INCOMPLETE = -8012;  //读写长度小于要求的
+        const int32_t EXIT_INDEX_ALREADY_LOAD_ERROR = -8011;    //在IndexHandle中，索引文件已经加载
+        const int32_t EXIT_META_UNEXPECT_FOUND_ERROR = -8010;  //存在非预期的索引文件导致create失败
+
+        static const std::string MAINBLOCK_DIR_PREFIX = "/mainblock"; //主块文件路径
+        static const std::string INDEX_DIR_PREFIX = "/index";   //索引文件路径
+        static const mode_t DIR_MODE = 0755;    //目录权限
+
+
 
         //内存映射选项
         struct MMapOption
