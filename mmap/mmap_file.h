@@ -7,12 +7,6 @@ namespace qiniu
 {
     namespace largefile
     {
-        struct MMapOption
-        {
-            int32_t max_mmap_size;  //设置内存映射的最大大小，int32_t表示不管系统是32位还是64位，统一用32位整数
-            int32_t first_mmap_size;    //第一次分配的大小
-            int32_t per_mmap_size;  //每次增加的大小
-        };
 
         class MMapFile
         {
