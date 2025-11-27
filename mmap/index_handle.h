@@ -36,9 +36,18 @@ namespace qiniu
             //获取索引文件中indexheader的数据
             IndexHeader * get_index_header();
 
+            //获取索引头部中BlockInfo的数据
+            BlockInfo * get_block_info();
+
+            //获取哈希桶的数量
+            int32_t get_bucket_size() const;
+
             //创建索引文件，初始化，并映射到内存
             int create(const uint32_t logic_block_id, const int32_t bucket_size, const MMapOption & mmap_option);
             //参数：logic_block_id：和主块id是一个意思  bucket_size：哈希桶大小 mmap_option：用于构造MMapFile
+
+            //加载索引文件
+            int load(const uint32_t logic_block_id, const int32_t bucket_size, const MMapOption & mmap_option);
 
         private:
             MMapFileOperation *mmap_file_op;

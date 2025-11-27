@@ -5,6 +5,7 @@
         "cstring": "cpp",
         "iosfwd": "cpp",
         "string": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "unordered_map": "cpp"
     }
 }

@@ -23,6 +23,9 @@ namespace qiniu
         const int32_t EXIT_DISK_OP_INCOMPLETE = -8012;  //读写长度小于要求的
         const int32_t EXIT_INDEX_ALREADY_LOAD_ERROR = -8011;    //在IndexHandle中，索引文件已经加载
         const int32_t EXIT_META_UNEXPECT_FOUND_ERROR = -8010;  //存在非预期的索引文件导致create失败
+        const int32_t EXIT_INDEX_DESTROY_ERROR = -8009; //索引文件损坏
+        const int32_t EXIT_BLOCKID_CONFLICT_ERROR = -8008;  //块id不相等（IndexHandle的load方法中）
+        const int32_t EXIT_BUCKET_CONFLICT_ERROR = -8008;  //bucket_size不相等（IndexHandle的load方法中）
 
         static const std::string MAINBLOCK_DIR_PREFIX = "/mainblock"; //主块文件路径
         static const std::string INDEX_DIR_PREFIX = "/index";   //索引文件路径

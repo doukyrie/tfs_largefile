@@ -30,7 +30,22 @@ namespace qiniu
         //获取索引文件中indexheader的数据
         IndexHeader * IndexHandle::get_index_header()
         {
+            //拿到这块内存的起始地址后，强制转成IndexHeader *类型就会直接拿到这块内存中的IndexHeader *数据（因为IndexHeader数据就在这块内存的起始位置）
             return reinterpret_cast<IndexHeader *>(this->mmap_file_op->get_map_data());
+        }
+
+        //获取索引头部中BlockInfo的数据
+        BlockInfo * IndexHandle::get_block_info()
+        {
+            //拿到这块内存的起始地址后，强制转成BlockInfo *类型就会直接拿到这块内存中的BlockInfo *数据（因为BlockInfo数据就在这块内存的起始位置）
+            return reinterpret_cast<BlockInfo *>(this->mmap_file_op->get_map_data());
+        }
+
+        //获取哈希桶的数量
+        int32_t IndexHandle::get_bucket_size() const
+        {
+            //转成IndexHeader *后直接去拿该结构体里面的bucket_size
+            return reinterpret_cast<IndexHeader *>(this->mmap_file_op->get_map_data())->bucket_size;
         }
 
         //创建索引文件，初始化，并映射到内存
@@ -100,5 +115,88 @@ namespace qiniu
 
             return OP_SUCCESS;
         }
+
+        //加载索引文件
+        int IndexHandle::load(const uint32_t logic_block_id, const int32_t bucket_size, const MMapOption & mmap_option)
+        {
+            int ret = 0;
+
+            if(this->is_load)
+            {
+                printf("index load failed. index file is already loaded.\n");
+                return EXIT_INDEX_ALREADY_LOAD_ERROR;
+            }
+
+            int64_t file_size = this->mmap_file_op->get_file_size();
+            if(file_size <0)
+            {
+                return file_size;   //打开失败会返回-1，且get_file_size内部会打印错误信息
+            }
+            else if(file_size == 0) //说明是个空文件，不合理，应该先create
+            {
+                printf("index file load failed. file_size = 0, index file destroyed.\n");
+                return EXIT_INDEX_DESTROY_ERROR;
+            }
+
+            MMapOption temp_mmap_option = mmap_option;  //因为传进来的mmap_option是const类型，因此用一个临时变量接收，以便修改其中的参数
+
+            //如果当前要加载的索引文件的大小大于初次要映射的内存大小，且小于最大映射大小时，将初次映射的内存大小改为file_size，使得文件能够映射
+            if(file_size > temp_mmap_option.first_mmap_size && file_size <= temp_mmap_option.max_mmap_size)
+            {
+                temp_mmap_option.first_mmap_size = file_size;
+            }
+            //如果文件超过了max_size，则在mmap_file_op中的pread和pwrite都定义了不在内存映射中读，而是直接读磁盘
+
+            ret = this->mmap_file_op->mmap_file(temp_mmap_option);
+            if(ret < 0)
+            {
+                return ret;
+            }
+
+            //因为在create的时候已经给block_id和bucket_size赋值了，因此如果此时还为0则文件异常
+            if(this->get_block_info()->block_id == 0 || this->get_bucket_size() == 0)
+            {
+                fprintf(stderr,"load index file failed. block_id and bucket_size = 0, file destroyed.\n");
+                return EXIT_INDEX_DESTROY_ERROR;
+            }
+
+            //检查文件大小，不能小于IndexHeader和哈希桶加起来的大小
+            if(file_size < sizeof(IndexHeader) + bucket_size*sizeof(int32_t))
+            {
+                fprintf(stderr,"failed in IndexHandle::load(). file_size < sizeof(IndexHeader) + \\
+                        bucket_size*sizeof(int32_t), file_size: %d, index_file_size: %d\n",
+                        file_size,sizeof(IndexHeader) + bucket_size*sizeof(int32_t));
+
+                return EXIT_INDEX_DESTROY_ERROR;
+            }
+
+            //检查传入的块id和索引文件中的是否相等
+            if(logic_block_id != this->get_block_info()->block_id)
+            {
+                fprintf(stderr,"failed in IndexHandle::load(). logic_block_id != this->get_block_info()->block_id, \\
+                        logic_block_id: %d, this->get_block_info()->block_id: %d\n",
+                        logic_block_id,this->get_block_info()->block_id);
+
+                return EXIT_BLOCKID_CONFLICT_ERROR;
+            }
+
+            //检查传入的bucket_size和索引文件中的是否相等
+            if(bucket_size != this->get_bucket_size())
+            {
+                fprintf(stderr,"failed in IndexHandle::load(). bucket_size != this->get_bucket_size(), \\
+                        bucket_size: %d, this->get_bucket_size(): %d\n",
+                        bucket_size,this->get_bucket_size());
+
+                return EXIT_BUCKET_CONFLICT_ERROR;
+            }
+
+            this->is_load = true;
+            printf("index file load success!\n");
+
+            return OP_SUCCESS;
+        }
+
+
+
     }
 }

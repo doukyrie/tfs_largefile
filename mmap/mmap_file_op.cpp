@@ -72,11 +72,13 @@ namespace qiniu
         {
             if(mmap_option.max_mmap_size < mmap_option.first_mmap_size)
             {
+                fprintf(stderr,"MMapFileOperation::mmap_file failed. mmap_option.max_mmap_size < mmap_option.first_mmap_size\n");
                 return OP_ERROR;
             }
 
             if(mmap_option.max_mmap_size <= 0)
             {
+                fprintf(stderr,"MMapFileOperation::mmap_file failed. mmap_option.max_mmap_size <= 0\n");
                 return OP_ERROR;
             }
 
